@@ -76,10 +76,14 @@ func WebsocketRoute() gin.HandlerFunc {
 				for client := range currentRoom.Clients {
 					log.Println(currentRoom.Clients)
 
+					log.Println("Sending message to WhiteboardSaveWorker")
+					channel <- rawMessage
+
 					if client == c {
 						continue
 					}
 
+					log.Println("Sending message to client", client.RemoteAddr().String())
 					err = client.WriteMessage(mt, rawMessage)
 
 					if err != nil {
@@ -92,7 +96,6 @@ func WebsocketRoute() gin.HandlerFunc {
 						log.Println("Error writing message", err)
 					}
 
-					channel <- rawMessage
 				}
 			}
 
@@ -183,7 +186,6 @@ func WhiteboardSaveWorker(roomId string, messageChannel chan []byte) {
 
 	// use wshub.StoreMessageToDB to save message to db
 	wshub.StoreMessageToDB(messageChannel, &storeWhiteboardMessage, &errChan)
-	defer close(messageChannel)
 
 	go func() {
 		for c := range errChan {

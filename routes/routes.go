@@ -78,6 +78,8 @@ func Handler(opts ...Option) *gin.Engine {
 	cnt := 0
 	rc := controllers.RoomController{Count: &cnt}
 
+	var wcdc controllers.WhiteboardCanvasDataController
+
 	r.Use(sessions.Sessions("whiteboardsession", store))
 	r.Use(middlewares.LoggerMiddleWare)
 
@@ -90,6 +92,7 @@ func Handler(opts ...Option) *gin.Engine {
 		v1.GET("/whiteboards", wc.GetWhiteboardByUserId)
 		v1.POST("/whiteboards", wc.CreateWhiteboard)
 		v1.DELETE("/whiteboards/:id", wc.DeleteWhiteboard)
+		v1.GET("/whiteboards/:id/whiteboard-canvas-data", wcdc.GetWhiteboardCanvasDataById)
 	}
 
 	r.POST("/login", controllers.Login(os.Getenv("GOOGLE_CLIENT_ID")))

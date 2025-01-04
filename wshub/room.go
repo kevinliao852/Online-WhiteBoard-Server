@@ -1,6 +1,7 @@
 package wshub
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/cockroachdb/errors"
@@ -64,10 +65,13 @@ type MessageSaver interface {
 func StoreMessageToDB(message chan []byte, saver MessageSaver, errChan *chan error) {
 	done := make(chan struct{})
 	// TODO: graceful shutdown
+	log.Println("Starting message saver")
 
 	for {
 		select {
 		case msg := <-message:
+			log.Println("Saving message: ", string(msg))
+
 			err := saver.SaveMessage(msg)
 
 			if err != nil {

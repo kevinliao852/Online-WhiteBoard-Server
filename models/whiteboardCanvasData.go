@@ -32,8 +32,8 @@ func DeleteAWhiteboardCanvasData(id uint) error {
 	return nil
 }
 
-func GetWhiteboardCanvasDataById(wb *WhiteboardCanvasData, id uint) error {
-	if err := database.DB.Find(wb, "id = ?", id).Error; err != nil {
+func GetWhiteboardCanvasDataById(wb *[]WhiteboardCanvasData, id uint) error {
+	if err := database.DB.Find(wb, "whiteboard_id = ?", id).Error; err != nil {
 		return err
 	}
 	return nil
